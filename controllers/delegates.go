@@ -2,10 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
-	//"fmt"
-	//"io/ioutil"
+	"fmt"
 	"github.com/astaxie/beego"
 	"net/http"
+	"strconv"
 )
 
 type Delegates struct {
@@ -61,5 +61,23 @@ func (c *Delegates) Get() {
 
 	c.Data["committedDelegates"] = committedDelegatesInfo.DelState.Del
 	c.Data["year"] = "2016"
+
+	totalDelsByCand := make(map[string]int16)
+	c.Data["totalDelsByCand"] = totalDelsByCand
+
+	for _, DelegatesByParty := range committedDelegatesInfo.DelState.Del {
+		for _, CurState := range DelegatesByParty.State {
+			for stateid, candidate := range CurState.Cand {
+				//println(stateid)
+				candidateTotal, err := strconv.ParseInt(candidate.DTot, 0, 16)
+				if err != nil {
+					fmt.Printf("Error on CandidateID %s for State %s\n", candidate.CID, stateid)
+					fmt.Println(err)
+				}
+				totalDelsByCand[candidate.CID] += int16(candidateTotal)
+			}
+		}
+	}
+
 	c.TplName = "delegates.tpl"
 }
