@@ -3,8 +3,8 @@
 
 <div id="main">
     <div class="header">
-        <h1>Page Title</h1>
-        <h2>A subtitle for your page goes here</h2>
+        <h1>DECISION 2016</h1>
+        <h2>Slamma jamma of the century</h2>
     </div>
     <div class="content">
         <h2 class="content-subhead">How to use this layout</h2>
