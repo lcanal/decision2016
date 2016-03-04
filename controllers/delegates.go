@@ -23,7 +23,7 @@ type APFormat struct {
 }
 
 type DelegatesByParty struct {
-	Pid    string //Party ID
+	PID    string //Party ID
 	DNeed  string //Delegates Needed
 	DVotes string //Delegate Votes
 	State  []State
@@ -55,12 +55,11 @@ func (c *Delegates) Get() {
 
 	// This gets data on the fly..
 	url := "https://interactives.ap.org/interactives/2016/delegate-tracker/live-data/data/delegates-delstate.json"
-	//url := "https://api.ap.org/v2/elections/xplor"
-	committedDelegates := new(DelegateInfo)
+	committedDelegatesInfo := new(DelegateInfo)
 
-	getJson(url, committedDelegates)
-	println(committedDelegates.DelState.Del[0].State[0].Cand[0].CName)
+	getJson(url, committedDelegatesInfo)
 
+	c.Data["committedDelegates"] = committedDelegatesInfo.DelState.Del
 	c.Data["year"] = "2016"
 	c.TplName = "delegates.tpl"
 }
