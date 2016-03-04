@@ -41,6 +41,11 @@ type Candidate struct {
 	D1    string //no idea...
 }
 
+type StateCount struct{
+	SID   string
+	Count  int16
+}
+
 func getJson(url string, target interface{}) error {
 	r, err := http.Get(url)
 	if err != nil {
@@ -56,28 +61,37 @@ func (c *Delegates) Get() {
 	// This gets data on the fly..
 	url := "https://interactives.ap.org/interactives/2016/delegate-tracker/live-data/data/delegates-delstate.json"
 	committedDelegatesInfo := new(DelegateInfo)
+	cidToCName := make(map[string]string)
+	totalCommittedDelegates := make(map[string]int16)
+	delegateCountByState := make(map[string][]StateCount)
 
 	getJson(url, committedDelegatesInfo)
 
 	c.Data["committedDelegates"] = committedDelegatesInfo.DelState.Del
+	c.Data["cidToCName"] = cidToCName
+	c.Data["totalCommittedDelegates"] = totalCommittedDelegates
+	c.Data["delegateCountByState"] = delegateCountByState
 	c.Data["year"] = "2016"
-
-	totalDelsByCand := make(map[string]int16)
-	c.Data["totalDelsByCand"] = totalDelsByCand
 
 	for _, DelegatesByParty := range committedDelegatesInfo.DelState.Del {
 		for _, CurState := range DelegatesByParty.State {
 			for stateid, candidate := range CurState.Cand {
-				//println(stateid)
 				candidateTotal, err := strconv.ParseInt(candidate.DTot, 0, 16)
 				if err != nil {
 					fmt.Printf("Error on CandidateID %s for State %s\n", candidate.CID, stateid)
 					fmt.Println(err)
 				}
-				totalDelsByCand[candidate.CID] += int16(candidateTotal)
+				totalCommittedDelegates[candidate.CID] += int16(candidateTotal)
+
+				if _,ok := cidToCName[candidate.CID]; !ok {
+					cidToCName[candidate.CID] = candidate.CName
+				}
+				canStateCount := StateCount{CurState.SID,int16(candidateTotal)}
+				delegateCountByState[candidate.CID] = append(delegateCountByState[candidate.CID],canStateCount )
+
 			}
 		}
 	}
-
+  delete(totalCommittedDelegates,"100004")
 	c.TplName = "delegates.tpl"
 }

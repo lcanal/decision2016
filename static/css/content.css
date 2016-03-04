@@ -1,0 +1,19 @@
+.dem{
+  color: blue;
+}
+
+.rep{
+  color: red;
+}
+
+.content-data{
+  max-width: none;
+}
+
+.pure-table th{
+  font-size: small;
+}
+
+.pure-table td{
+  font-size: small;
+}
