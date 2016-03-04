@@ -13,44 +13,43 @@ type Delegates struct {
 }
 
 type DelegateInfo struct {
-		DelState APFormat
+	DelState APFormat
 }
 
 type APFormat struct {
-	Test 			 			string
-	TimeStamp  		  string
-	Del             []DelegatesByParty
+	Test      string
+	TimeStamp string
+	Del       []DelegatesByParty
 }
 
 type DelegatesByParty struct {
-	Pid 						string   //Party ID
-	DNeed  					string	//Delegates Needed
-	DVotes 					string  //Delegate Votes
-	State 					[]State
+	Pid    string //Party ID
+	DNeed  string //Delegates Needed
+	DVotes string //Delegate Votes
+	State  []State
 }
 
 type State struct {
-	SID       			string //stateid
-	Cand						[]Candidate
+	SID  string //stateid
+	Cand []Candidate
 }
 
 type Candidate struct {
-	CID						string
-	CName 				string
-	DTot 					string //total delegates
-	D1						string //no idea...
+	CID   string
+	CName string
+	DTot  string //total delegates
+	D1    string //no idea...
 }
 
 func getJson(url string, target interface{}) error {
-    r, err := http.Get(url)
-    if err != nil {
-        return err
-    }
-    defer r.Body.Close()
+	r, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer r.Body.Close()
 
-    return json.NewDecoder(r.Body).Decode(target)
+	return json.NewDecoder(r.Body).Decode(target)
 }
-
 
 func (c *Delegates) Get() {
 
@@ -59,7 +58,7 @@ func (c *Delegates) Get() {
 	//url := "https://api.ap.org/v2/elections/xplor"
 	committedDelegates := new(DelegateInfo)
 
-	getJson(url,committedDelegates)
+	getJson(url, committedDelegates)
 	println(committedDelegates.DelState.Del[0].State[0].Cand[0].CName)
 
 	c.Data["year"] = "2016"
