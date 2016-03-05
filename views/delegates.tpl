@@ -2,10 +2,10 @@
 {{ template "sidemenu.html" }}
 <div id="main">
     <div class="header">
-        <h1>Committed Delegates</h1>
+        <h1>Committed Delegates by State</h1>
     </div>
     <div class="content">
-    <h1>Total Delegate Counts</h1>  <div id="legendDiv"></div>
+    <div id="legendDiv"></div>
       <canvas id="myChart" width="1300" height="550"></canvas>
       <script>
       var data = {
@@ -18,13 +18,13 @@
             ],
     datasets: [
         {
-            label: "BERNIE",
-            fillColor: "rgba(220,220,220,0.2)",
-            strokeColor: "rgba(220,220,220,1)",
-            pointColor: "rgba(220,220,220,1)",
+            label: "SANDERS",
+            fillColor: "rgba(150,204,195,0.5)",
+            strokeColor: "rgba(150,204,195,1)",
+            pointColor: "rgba(150,204,195,1)",
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
+            pointHighlightStroke: "rgba(150,204,195,1)",
             data: [
             {{ with $statecountarray := index $.delegateCountByState "1445" }}
             {{ range $statecount := $statecountarray }}
@@ -34,7 +34,7 @@
             ]
         },
         {
-            label: "HILARY",
+            label: "CLINTON",
             fillColor: "rgba(151,187,205,0.2)",
             strokeColor: "rgba(151,187,205,1)",
             pointColor: "rgba(151,187,205,1)",
@@ -48,6 +48,54 @@
               {{end}}
               {{end}}
             ]
+        },
+        {
+            label: "TRUMP",
+            fillColor: "rgba(206,50,26,0.2)",
+            strokeColor: "rgba(206,50,26,1)",
+            pointColor: "rgba(206,50,26,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(206,50,26,1)",
+            data: [
+              {{ with $statecountarray := index $.delegateCountByState "8639" }}
+              {{ range $statecount := $statecountarray }}
+                "{{ $statecount.Count }}",
+              {{end}}
+              {{end}}
+          ]
+        },
+        {
+            label: "CRUZ",
+            fillColor: "rgba(189,133,219,0.2)",
+            strokeColor: "rgba(189,133,219,1)",
+            pointColor: "rgba(189,133,219,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(189,133,219,1)",
+            data: [
+              {{ with $statecountarray := index $.delegateCountByState "61815" }}
+              {{ range $statecount := $statecountarray }}
+                "{{ $statecount.Count }}",
+              {{end}}
+              {{end}}
+          ]
+        },
+        {
+            label: "RUBIO",
+            fillColor: "rgba(214,155,19,0.2)",
+            strokeColor: "rgba(214,155,19,1)",
+            pointColor: "rgba(214,155,19,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(214,155,19,1)",
+            data: [
+              {{ with $statecountarray := index $.delegateCountByState "53044" }}
+              {{ range $statecount := $statecountarray }}
+                "{{ $statecount.Count }}",
+              {{end}}
+              {{end}}
+          ]
         }
     ]
     };
