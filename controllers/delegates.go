@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego"
+	"io/ioutil"
 	"net/http"
+	"os"
 	"strconv"
 )
 
@@ -56,16 +58,28 @@ func getJson(url string, target interface{}) error {
 	return json.NewDecoder(r.Body).Decode(target)
 }
 
+func getJsonFromDisk(fileLocation string, target interface{}) error {
+	file, err := ioutil.ReadFile(fileLocation)
+	if err != nil {
+		fmt.Printf("File error: %v\n", err)
+		os.Exit(1)
+	}
+	return json.Unmarshal(file, &target)
+}
 func (c *Delegates) Get() {
+	committedDelegatesInfo := new(DelegateInfo)
 
 	// This gets data on the fly..
-	url := "https://interactives.ap.org/interactives/2016/delegate-tracker/live-data/data/delegates-delstate.json"
-	committedDelegatesInfo := new(DelegateInfo)
+	//url := "https://interactives.ap.org/interactives/2016/delegate-tracker/live-data/data/delegates-delstate.json"
+	//getJson(url, committedDelegatesInfo)
+
+	// Use this when data won't change much..
+	fileLocation := "data/delegates-delstate.json"
+	getJsonFromDisk(fileLocation, committedDelegatesInfo)
+
 	cidToCName := make(map[string]string)
 	totalCommittedDelegates := make(map[string]int16)
 	delegateCountByState := make(map[string][]StateCount)
-
-	getJson(url, committedDelegatesInfo)
 
 	c.Data["committedDelegates"] = committedDelegatesInfo.DelState.Del
 	c.Data["cidToCName"] = cidToCName

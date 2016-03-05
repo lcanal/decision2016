@@ -6,11 +6,16 @@
   color: red;
 }
 
+#menu{
+  width: 180px;
+}
+
 .header{
   padding-top: 0.5em;
 }
 .content{
   max-width: 95%;
+  padding-left: 4em;
 }
 
 .pure-table th{
