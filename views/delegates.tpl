@@ -6,7 +6,7 @@
     </div>
     <div class="content">
     <div id="legendDiv"></div>
-      <canvas id="myChart" width="1300" height="550"></canvas>
+      <canvas id="myChart" width="1000" height="550"></canvas>
       <script>
       var data = {
         labels:   [
