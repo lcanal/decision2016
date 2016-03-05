@@ -10,6 +10,52 @@ import (
 	"strconv"
 )
 
+func (c *Delegates) Get() {
+	committedDelegatesInfo := new(DelegateInfo)
+
+	// This gets data on the fly..
+	url := "https://interactives.ap.org/interactives/2016/delegate-tracker/live-data/data/delegates-delstate.json"
+	getJson(url, committedDelegatesInfo)
+
+	// Use this when data won't change much..
+	//fileLocation := "data/delegates-delstate.json"
+	//getJsonFromDisk(fileLocation, committedDelegatesInfo)
+
+	cidToCName := make(map[string]string)
+	totalCommittedDelegates := make(map[string]int16)
+	delegateCountByState := make(map[string][]StateCount)
+
+	c.Data["committedDelegates"] = committedDelegatesInfo.DelState.Del
+	c.Data["cidToCName"] = cidToCName
+	c.Data["totalCommittedDelegates"] = totalCommittedDelegates
+	c.Data["delegateCountByState"] = delegateCountByState
+	c.Data["year"] = "2016"
+
+	for _, DelegatesByParty := range committedDelegatesInfo.DelState.Del {
+		for _, CurState := range DelegatesByParty.State {
+			for stateid, candidate := range CurState.Cand {
+				candidateTotal, err := strconv.ParseInt(candidate.DTot, 0, 16)
+				if err != nil {
+					fmt.Printf("Error on CandidateID %s for State %s\n", candidate.CID, stateid)
+					fmt.Println(err)
+				}
+				totalCommittedDelegates[candidate.CID] += int16(candidateTotal)
+
+				//Build Candidate ID to Name map.
+				if _, ok := cidToCName[candidate.CID]; !ok {
+					cidToCName[candidate.CID] = candidate.CName
+				}
+
+				//Also build a count by State, using candidate id as a key
+				canStateCount := StateCount{CurState.SID, int16(candidateTotal)}
+				delegateCountByState[candidate.CID] = append(delegateCountByState[candidate.CID], canStateCount)
+
+			}
+		}
+	}
+	delete(totalCommittedDelegates, "100004")
+	c.TplName = "delegates.tpl"
+}
 type Delegates struct {
 	beego.Controller
 }
@@ -65,50 +111,4 @@ func getJsonFromDisk(fileLocation string, target interface{}) error {
 		os.Exit(1)
 	}
 	return json.Unmarshal(file, &target)
-}
-func (c *Delegates) Get() {
-	committedDelegatesInfo := new(DelegateInfo)
-
-	// This gets data on the fly..
-	//url := "https://interactives.ap.org/interactives/2016/delegate-tracker/live-data/data/delegates-delstate.json"
-	//getJson(url, committedDelegatesInfo)
-
-	// Use this when data won't change much..
-	fileLocation := "data/delegates-delstate.json"
-	getJsonFromDisk(fileLocation, committedDelegatesInfo)
-
-	cidToCName := make(map[string]string)
-	totalCommittedDelegates := make(map[string]int16)
-	delegateCountByState := make(map[string][]StateCount)
-
-	c.Data["committedDelegates"] = committedDelegatesInfo.DelState.Del
-	c.Data["cidToCName"] = cidToCName
-	c.Data["totalCommittedDelegates"] = totalCommittedDelegates
-	c.Data["delegateCountByState"] = delegateCountByState
-	c.Data["year"] = "2016"
-
-	for _, DelegatesByParty := range committedDelegatesInfo.DelState.Del {
-		for _, CurState := range DelegatesByParty.State {
-			for stateid, candidate := range CurState.Cand {
-				candidateTotal, err := strconv.ParseInt(candidate.DTot, 0, 16)
-				if err != nil {
-					fmt.Printf("Error on CandidateID %s for State %s\n", candidate.CID, stateid)
-					fmt.Println(err)
-				}
-				totalCommittedDelegates[candidate.CID] += int16(candidateTotal)
-
-				//Build Candidate ID to Name map.
-				if _, ok := cidToCName[candidate.CID]; !ok {
-					cidToCName[candidate.CID] = candidate.CName
-				}
-
-				//Also build a count by State, using candidate id as a key
-				canStateCount := StateCount{CurState.SID, int16(candidateTotal)}
-				delegateCountByState[candidate.CID] = append(delegateCountByState[candidate.CID], canStateCount)
-
-			}
-		}
-	}
-	delete(totalCommittedDelegates, "100004")
-	c.TplName = "delegates.tpl"
 }

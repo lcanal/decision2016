@@ -1,8 +1,10 @@
 {{ template "header.html" }}
 {{ template "sidemenu.html" }}
+
+
 <div id="main">
     <div class="header">
-        <h1>Delegates by State</h1>
+        <h1>Super Delegates <!--({{ $.superDelegateTotal }} total)--> by State</h1>
     </div>
     <div class="content">
     <div id="legendDiv"></div>
