@@ -41,9 +41,9 @@ type Candidate struct {
 	D1    string //no idea...
 }
 
-type StateCount struct{
+type StateCount struct {
 	SID   string
-	Count  int16
+	Count int16
 }
 
 func getJson(url string, target interface{}) error {
@@ -83,15 +83,18 @@ func (c *Delegates) Get() {
 				}
 				totalCommittedDelegates[candidate.CID] += int16(candidateTotal)
 
-				if _,ok := cidToCName[candidate.CID]; !ok {
+				//Build Candidate ID to Name map.
+				if _, ok := cidToCName[candidate.CID]; !ok {
 					cidToCName[candidate.CID] = candidate.CName
 				}
-				canStateCount := StateCount{CurState.SID,int16(candidateTotal)}
-				delegateCountByState[candidate.CID] = append(delegateCountByState[candidate.CID],canStateCount )
+
+				//Also build a count by State, using candidate id as a key
+				canStateCount := StateCount{CurState.SID, int16(candidateTotal)}
+				delegateCountByState[candidate.CID] = append(delegateCountByState[candidate.CID], canStateCount)
 
 			}
 		}
 	}
-  delete(totalCommittedDelegates,"100004")
+	delete(totalCommittedDelegates, "100004")
 	c.TplName = "delegates.tpl"
 }

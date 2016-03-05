@@ -6,8 +6,11 @@
   color: red;
 }
 
-.content-data{
-  max-width: none;
+.header{
+  padding-top: 0.5em;
+}
+.content{
+  max-width: 95%;
 }
 
 .pure-table th{
@@ -16,4 +19,8 @@
 
 .pure-table td{
   font-size: small;
+}
+
+#legendDiv li{
+  list-style: none;
 }
